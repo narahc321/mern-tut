@@ -6,7 +6,7 @@ import {
   Switch,
 } from 'react-router-dom';
 
-import MainNavigation from './shared/components/navigation/MainNavigation';
+import MainNavigation from './shared/components/Navigation/MainNavigation';
 import Places from './places/pages/NewPlace';
 import UserPlaces from './places/pages/UserPlaces';
 import Users from './user/pages/Users';
