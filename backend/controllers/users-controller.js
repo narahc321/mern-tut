@@ -72,7 +72,10 @@ const login = async (req, res, next) => {
     return next(new HttpError('Credentials seems wrong.', 401));
   }
 
-  res.status(200).json({ message: 'logged In!' });
+  res.status(200).json({
+    message: 'logged In!',
+    user: existingUser.toObject({ getters: true }),
+  });
 };
 
 exports.getUsers = getUsers;
