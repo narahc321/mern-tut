@@ -8,6 +8,7 @@ import { useHttpClient } from '../../shared/hooks/http-hook';
 import { AuthContext } from '../../shared/context/auth-context';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 import {
   VALIDATOR_EMAIL,
@@ -42,6 +43,7 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -51,6 +53,10 @@ const Auth = () => {
           ...formState.inputs,
           name: {
             value: '',
+            isValid: false,
+          },
+          image: {
+            value: null,
             isValid: false,
           },
         },
@@ -63,32 +69,35 @@ const Auth = () => {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
+    // formData.append('image', 'formState.inputs.image.value');
+    // email: formState.inputs.email.value,
+    // password: formState.inputs.password.value,
+
     try {
       if (isLoginMode) {
         const responseData = await sendRequest(
           'http://localhost:4000/api/users/login',
           'POST',
-          {
-            'Content-Type': 'application/json',
-          },
           JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          })
+          }),
+          {
+            'Content-Type': 'application/json',
+          }
         );
         auth.login(responseData.user.id);
       } else {
-        const responseData = await fetch(
+        const formData = new FormData();
+        formData.append('name', formState.inputs.name.value);
+        formData.append('email', formState.inputs.email.value);
+        formData.append('password', formState.inputs.password.value);
+        formData.append('image', formState.inputs.image.value);
+        console.log(formData);
+        const responseData = await sendRequest(
           'http://localhost:4000/api/users/signup',
           'POST',
-          {
-            'Content-Type': 'application/json',
-          },
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          })
+          formData
         );
         auth.login(responseData.user.id);
       }
@@ -115,6 +124,14 @@ const Auth = () => {
               errorText="Please enter your name"
               onInput={inputHandler}
             ></Input>
+          )}
+          {!isLoginMode && (
+            <ImageUpload
+              center
+              id="image"
+              onInput={inputHandler}
+              errorText={'Please provide a valid image!'}
+            />
           )}
           <Input
             element="input"
