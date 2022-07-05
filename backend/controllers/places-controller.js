@@ -60,7 +60,7 @@ const createPlace = async (req, res, next) => {
     );
   }
 
-  const { title, description, address, creator } = req.body;
+  const { title, description, address } = req.body;
 
   let coordinates;
   try {
@@ -75,12 +75,12 @@ const createPlace = async (req, res, next) => {
     address,
     location: coordinates,
     image: req.file.path,
-    creator,
+    creator: req.userData.userId,
   });
 
   let user;
   try {
-    user = await User.findById(creator);
+    user = await User.findById(req.userData.userId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, couldn't create place",
@@ -136,8 +136,9 @@ const updatePlace = async (req, res, next) => {
     return next(error);
   }
 
-  // const updatedPlace = { ...DUMMY_PLACES.find((p) => p.id === placeId) };
-  // const placeIndex = DUMMY_PLACES.findIndex((p) => p.id === placeId);
+  if (place.creator.toString() !== req.userData.userId) {
+    return next(new HttpError('Unauthorized request!', 401));
+  }
 
   place.title = title;
   place.description = description;
@@ -169,6 +170,10 @@ const deletePlace = async (req, res, next) => {
     return next(
       new HttpError("Something went wrong, couldn't find place", 500)
     );
+  }
+
+  if (place.creator.id !== req.userData.userId) {
+    return next(new HttpError('Unauthorized request!', 401));
   }
 
   const image = place.image;
