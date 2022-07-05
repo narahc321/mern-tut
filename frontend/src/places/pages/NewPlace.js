@@ -52,10 +52,11 @@ const NewPlace = () => {
       formData.append('title', formState.inputs.title.value);
       formData.append('description', formState.inputs.description.value);
       formData.append('address', formState.inputs.address.value);
-      formData.append('creator', authContext.userId);
       formData.append('image', formState.inputs.image.value);
 
-      await sendRequest('http://localhost:4000/api/places/', 'POST', formData);
+      await sendRequest('http://localhost:4000/api/places/', 'POST', formData, {
+        Authorization: 'Bearer ' + authContext.token,
+      });
       history.push('/');
       // Redirect to different page
     } catch (err) {}

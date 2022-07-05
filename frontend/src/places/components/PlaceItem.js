@@ -12,7 +12,7 @@ import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
 const PlaceItem = (props) => {
-  const auth = useContext(AuthContext);
+  const authContext = useContext(AuthContext);
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [showMap, setShowMap] = useState(false);
@@ -28,7 +28,11 @@ const PlaceItem = (props) => {
     try {
       await sendRequest(
         `http://localhost:4000/api/places/${props.id}`,
-        'DELETE'
+        'DELETE',
+        null,
+        {
+          Authorization: 'Bearer ' + authContext.token,
+        }
       );
       props.onDelete(props.id);
     } catch {}
@@ -94,7 +98,7 @@ const PlaceItem = (props) => {
             >
               View on Map
             </Button>
-            {auth.userId === props.creatorId && (
+            {authContext.userId === props.creatorId && (
               <Button
                 className="place-item__actions--btn"
                 to={`/places/${props.id}`}
@@ -102,7 +106,7 @@ const PlaceItem = (props) => {
                 Edit
               </Button>
             )}
-            {auth.userId === props.creatorId && (
+            {authContext.userId === props.creatorId && (
               <Button
                 className="place-item__actions--btn"
                 danger

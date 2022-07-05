@@ -69,10 +69,6 @@ const Auth = () => {
   const authSubmitHandler = async (event) => {
     event.preventDefault();
 
-    // formData.append('image', 'formState.inputs.image.value');
-    // email: formState.inputs.email.value,
-    // password: formState.inputs.password.value,
-
     try {
       if (isLoginMode) {
         const responseData = await sendRequest(
@@ -86,20 +82,19 @@ const Auth = () => {
             'Content-Type': 'application/json',
           }
         );
-        auth.login(responseData.user.id);
+        auth.login(responseData.userId, responseData.token);
       } else {
         const formData = new FormData();
         formData.append('name', formState.inputs.name.value);
         formData.append('email', formState.inputs.email.value);
         formData.append('password', formState.inputs.password.value);
         formData.append('image', formState.inputs.image.value);
-        console.log(formData);
         const responseData = await sendRequest(
           'http://localhost:4000/api/users/signup',
           'POST',
           formData
         );
-        auth.login(responseData.user.id);
+        auth.login(responseData.userId, responseData.token);
       }
     } catch (err) {
       console.log(err);
