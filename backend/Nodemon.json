@@ -1,0 +1,9 @@
+{
+  "env": {
+    "DB_USER": "test",
+    "DB_PASSWORD": "test",
+    "DB_NAME": "mern",
+    "LOCATION_API_KEY": "pk.a60ba96e339b1aa529d2c4f0b98b3023",
+    "JWT_KEY": "super_secret_dont_share"
+  }
+}

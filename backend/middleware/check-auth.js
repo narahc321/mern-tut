@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
       throw new Error('Unauthorized request!');
     }
 
-    let decodedToken = jwt.verify(token, 'super_secret_dont_share');
+    let decodedToken = jwt.verify(token, process.env.JWT_KEY);
     req.userData = { userId: decodedToken.userId };
     next();
   } catch (err) {
